@@ -1,5 +1,6 @@
 # Experiment 02 — OpenMP Matrix Multiplication
 
+
 ## Objective
 
 To implement and execute matrix multiplication using OpenMP shared-memory parallelism and observe the use of multiple CPU threads during execution.
