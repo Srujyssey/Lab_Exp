@@ -12,7 +12,7 @@ This repository contains laboratory work completed as part of my undergraduate c
 |---|---|
 | **Parallel Computing & GPU** | Code • Screenshots • Results |
 | **Cloud Computing** | Code • Screenshots • Results |
-| **CNS** | Source Code |
+
 
 ---
 
@@ -27,10 +27,10 @@ Lab_Exp/
 │   └── README.md
 │
 ├── Cloud-Computing/
-│   └── ...
-│
-└── CNS/
-    └── ...
+│   ├── Experiment-01/
+│   ├── Experiment-02/
+│   └── README.md
+
 ```
 
 ---
