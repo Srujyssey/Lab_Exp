@@ -14,15 +14,13 @@
 
 This experiment implements **4000 × 4000 matrix multiplication using CUDA GPU parallelism**.
 
-Unlike the sequential, OpenMP, and MPI implementations, CUDA offloads the matrix multiplication computation from the CPU to an NVIDIA GPU. The CPU prepares the input matrices and transfers them to GPU memory. A CUDA kernel is then launched, where GPU threads compute the output matrix in parallel.
-
-The experiment covers GPU verification, CUDA compiler verification, CUDA source code, compilation, execution configuration, and final result verification.
+Unlike sequential execution, OpenMP shared-memory parallelism, and MPI distributed-memory parallelism, CUDA offloads the matrix multiplication computation to an NVIDIA GPU. The CPU prepares the input matrices and transfers them to GPU memory. A CUDA kernel is then launched, where GPU threads compute the output matrix in parallel.
 
 ---
 
 ## 🎯 Objective
 
-To implement and execute matrix multiplication using **CUDA on an NVIDIA GPU**, understand the organization of CUDA blocks and threads, measure GPU execution time, and verify the correctness of the computed matrix.
+To implement and execute matrix multiplication using **CUDA on an NVIDIA GPU**, understand CUDA thread and block organization, measure GPU execution time, and verify the correctness of the computed matrix.
 
 ---
 
@@ -72,7 +70,7 @@ Before executing the CUDA program, the NVIDIA GPU environment was verified using
 
     nvidia-smi
 
-This command is used to confirm that the NVIDIA driver can detect the available GPU.
+This confirms that the NVIDIA driver can detect the available GPU.
 
 ![GPU Verification](screenshots/01_GPU_Verification.png)
 
@@ -98,7 +96,7 @@ The CUDA matrix multiplication program was implemented using the source file:
 
 The CUDA kernel calculates one output element of matrix C for each logical GPU thread.
 
-The row and column of each element are identified using:
+The row and column of each output element are determined using:
 
     int row = blockIdx.y * blockDim.y + threadIdx.y;
     int col = blockIdx.x * blockDim.x + threadIdx.x;
@@ -109,25 +107,35 @@ The kernel then performs the matrix multiplication for that output element.
 
 ---
 
-## 🔨 4. CUDA Compilation
+## 🔨 4. Compilation and Execution
 
-The CUDA program was compiled using `nvcc`:
+The CUDA program is compiled using `nvcc`:
 
     nvcc -O2 matrix_cuda.cu -o matrix_cuda
-
-The `nvcc` compiler handles the CUDA source code and prepares the executable for GPU execution.
 
 After successful compilation, the executable is:
 
     matrix_cuda
 
-![CUDA Compilation](screenshots/04_CUDA_Compilation.png)
+The program is executed using:
+
+    ./matrix_cuda
+
+During execution:
+
+1. Matrix A and Matrix B are initialized in host memory.
+2. GPU memory is allocated.
+3. The matrices are transferred from CPU memory to GPU memory.
+4. The CUDA kernel is launched.
+5. GPU threads compute the output matrix.
+6. The resulting matrix is copied back to the CPU.
+7. The output is verified.
 
 ---
 
 ## 🧩 CUDA Execution Configuration
 
-The experiment uses:
+The experiment uses the following configuration:
 
 | Parameter | Configuration |
 |---|---|
@@ -142,7 +150,9 @@ Since:
 
     4000 / 16 = 250
 
-the grid requires `250 × 250` blocks.
+the grid consists of:
+
+    250 × 250 = 62,500 blocks
 
 Each block contains:
 
@@ -152,33 +162,54 @@ Therefore:
 
     62,500 × 256 = 16,000,000
 
-logical thread instances are launched.
+logical CUDA thread instances are launched.
 
 ---
 
-## 🚀 CUDA Execution
+## 🚀 CUDA Kernel Concept
 
-The compiled CUDA program is executed using:
+The CUDA implementation maps the output matrix onto GPU threads.
 
-    ./matrix_cuda
+Conceptually:
 
-During execution:
+    One CUDA thread → One output element C[row][col]
 
-1. Matrix A and Matrix B are stored in host memory.
-2. GPU memory is allocated.
-3. The matrices are transferred from CPU memory to GPU memory.
-4. The CUDA kernel is launched.
-5. GPU threads calculate the output matrix.
-6. The resulting matrix is copied back to the CPU.
-7. The output is verified.
+For every output element:
 
-![CUDA Execution Configuration](screenshots/05_CUDA_Execution_Configuration.png)
+    C[row][col] =
+        A[row][0] × B[0][col] +
+        A[row][1] × B[1][col] +
+        ...
+        A[row][3999] × B[3999][col]
+
+This allows many output elements to be processed concurrently by GPU threads.
 
 ---
 
-## ✅ Final CUDA Result
+## ⚙️ CUDA Memory Flow
 
-The program reports:
+    CPU Memory
+        |
+        | Host → Device
+        v
+    GPU Memory
+        |
+        | CUDA Kernel
+        v
+    Matrix C on GPU
+        |
+        | Device → Host
+        v
+    CPU Memory
+        |
+        v
+    Verification
+
+---
+
+## ✅ 5. Final CUDA Result
+
+The final program output reports:
 
 - Matrix size
 - Grid size
@@ -191,9 +222,7 @@ The correctness of the computation is verified using:
 
     C[0][0] = 4000.00
 
-The actual execution time should be taken from the output generated during the experiment.
-
-![Final CUDA Result](screenshots/06_Final_CUDA_Result.png)
+![Final CUDA Result](screenshots/04_Final_CUDA_Result.png)
 
 ---
 
@@ -209,54 +238,13 @@ The actual execution time should be taken from the output generated during the e
 | Kernel Execution Time | Recorded in final output |
 | Total CUDA Phase Time | Recorded in final output |
 
-The **Total CUDA Phase Time** includes the GPU-related phase measured by the program, including memory transfers and kernel execution as defined by the implementation.
-
----
-
-## 🔍 CUDA Kernel Concept
-
-The CUDA implementation maps the output matrix onto GPU threads.
-
-Conceptually:
-
-    Thread → One output element C[row][col]
-
-For every output element:
-
-    C[row][col] =
-        A[row][0] × B[0][col] +
-        A[row][1] × B[1][col] +
-        ...
-        A[row][3999] × B[3999][col]
-
-This allows a large number of output elements to be processed in parallel by GPU threads.
-
----
-
-## ⚙️ CUDA Memory Flow
-
-    CPU Memory
-        |
-        |  Host → Device
-        v
-    GPU Memory
-        |
-        |  CUDA Kernel
-        v
-    Matrix C on GPU
-        |
-        |  Device → Host
-        v
-    CPU Memory
-        |
-        v
-    Verification
+The execution times should be taken directly from the final CUDA output.
 
 ---
 
 ## 📈 Performance Observation
 
-CUDA uses massive thread-level parallelism to perform the matrix multiplication on the GPU.
+CUDA uses GPU thread-level parallelism to perform matrix multiplication.
 
 The CUDA execution time can be compared with the sequential, OpenMP, and MPI implementations from the previous experiments.
 
@@ -264,20 +252,18 @@ The speedup can be calculated using:
 
     Speedup = Sequential Execution Time / CUDA Execution Time
 
-For comparison, the execution time recorded in the final CUDA output should be used.
+The actual values should be taken from the recorded experiment outputs.
 
 ---
 
 ## 📸 Screenshots
 
-The screenshots document the complete CUDA workflow:
+The experiment contains four screenshots documenting the main stages:
 
 1. GPU verification
 2. CUDA compiler verification
 3. CUDA source code
-4. CUDA compilation
-5. CUDA execution configuration
-6. Final CUDA result
+4. Final CUDA result
 
 ---
 
@@ -291,7 +277,7 @@ The experiment covered:
 - CUDA compiler verification
 - CUDA source implementation
 - CUDA compilation using `nvcc`
-- Grid and block configuration
+- CUDA grid and block configuration
 - GPU kernel execution
 - Result verification
 - CUDA performance measurement
@@ -300,4 +286,4 @@ The final computation was verified using:
 
     C[0][0] = 4000.00
 
-This experiment demonstrates how CUDA uses GPU threads, blocks, and grids to execute matrix multiplication in parallel.
+This experiment demonstrates the use of CUDA threads, blocks, and grids for parallel matrix multiplication on an NVIDIA GPU.
