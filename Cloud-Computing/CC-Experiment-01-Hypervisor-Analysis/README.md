@@ -69,9 +69,57 @@ To make the comparison consistent, both virtual machines use the same intended b
 
 ---
 
-##  Benchmark Method
+#  EXECUTION STEPS
 
-The same CPU benchmark is used for both virtual machines:
+##  Step 1 — Create the Virtual Machines
+
+Create an Ubuntu virtual machine separately in:
+
+- **Proxmox VE** for the Type-1 experiment
+- **VMware Workstation** for the Type-2 experiment
+
+---
+
+##  Step 2 — Configure the Virtual Machines
+
+Configure both VMs with the same intended resources:
+
+| Parameter | Configuration |
+|---|---|
+| Guest OS | Ubuntu |
+| CPU | `2 vCPU` |
+| Memory | `2 GB RAM` |
+| Disk | `20 GB` |
+
+For VMware Workstation, the network configuration used in the experiment is **NAT**.
+
+---
+
+##  Step 3 — Start the Virtual Machines
+
+Start each Ubuntu VM and open the guest operating system console.
+
+Verify that Ubuntu is running correctly before beginning the benchmark.
+
+---
+
+##  Step 4 — Verify System Configuration
+
+Inside the Ubuntu VM, check the processor configuration:
+
+    lscpu
+
+Check the available memory:
+
+    free -h
+
+Record the system configuration as part of the experimental evidence.
+
+---
+
+##  Step 5 — Run the Sysbench Benchmark
+
+Execute the same CPU benchmark on both virtual machines:
 
     sysbench cpu --cpu-max-prime=20000 run
 
@@ -84,6 +132,54 @@ The benchmark records:
 - Average latency
 - Maximum latency
 - 95th percentile latency
+- Latency sum
+
+---
+
+##  Step 6 — Monitor Resource Usage
+
+During benchmark execution, monitor the virtual machine resource usage using:
+
+    top
+
+Observe the CPU and memory utilization while the benchmark is running.
+
+---
+
+##  Step 7 — Record the Results
+
+Record the Sysbench output for each hypervisor.
+
+The following values are used for comparison:
+
+- Execution time
+- Total events
+- Events per second
+- Minimum latency
+- Average latency
+- Maximum latency
+- 95th percentile latency
+- Latency sum
+
+---
+
+##  Step 8 — Capture Experimental Evidence
+
+Capture screenshots showing:
+
+- Hypervisor environment
+- VM configuration
+- VM running state
+- Ubuntu console
+- System configuration
+- Sysbench benchmark output
+- Resource monitoring
+
+---
+
+##  Step 9 — Compare the Results
+
+Compare the recorded results from **Proxmox VE** and **VMware Workstation** using the same benchmark workload and intended VM configuration.
 
 ---
 
@@ -106,21 +202,28 @@ An Ubuntu virtual machine is created and configured using the standard experimen
 | Memory | 2 GB RAM |
 | Disk | 20 GB |
 
+### Proxmox Execution
+
+1. Create the Ubuntu VM in Proxmox VE.
+2. Configure `2 vCPU`, `2 GB RAM`, and `20 GB Disk`.
+3. Start the virtual machine.
+4. Open the Ubuntu console.
+5. Verify the CPU and memory configuration.
+6. Run the Sysbench CPU benchmark.
+7. Monitor resource utilization.
+8. Record the final benchmark result.
+
 ### Proxmox Evidence
 
-![Proxmox VE Dashboard](screenshots/type1-proxmox/01-proxmox-dashboard.png)
-
-![Proxmox VM Configuration](screenshots/type1-proxmox/02-proxmox-vm-configuration.png)
-
-![Proxmox VM Running](screenshots/type1-proxmox/03-proxmox-vm-running.png)
-
-![Ubuntu Running in Proxmox Console](screenshots/type1-proxmox/04-proxmox-ubuntu-console.png)
-
-![Proxmox System Configuration 1](screenshots/type1-proxmox/05-proxmox-sys-configuration(1).png)
-
-![Proxmox Sysbench Result](screenshots/type1-proxmox/06-proxmox-sys-configuration(2).png)
-
-![Proxmox Resource Monitoring](screenshots/type1-proxmox/07-proxmox-resource-monitoring.png)
+| Screenshot | Evidence |
+|---|---|
+| ![Proxmox Dashboard](screenshots/type1-proxmox/01-proxmox-dashboard.png) | Proxmox VE Dashboard |
+| ![Proxmox VM Configuration](screenshots/type1-proxmox/02-proxmox-vm-configuration.png) | VM Configuration |
+| ![Proxmox VM Running](screenshots/type1-proxmox/03-proxmox-vm-running.png) | Running VM |
+| ![Ubuntu Console](screenshots/type1-proxmox/04-proxmox-ubuntu-console.png) | Ubuntu Console |
+| ![System Configuration 1](screenshots/type1-proxmox/05-proxmox-sys-configuration%281%29.png) | System Configuration |
+| ![Sysbench Result](screenshots/type1-proxmox/06-proxmox-sys-configuration%282%29.png) | Sysbench Benchmark Result |
+| ![Resource Monitoring](screenshots/type1-proxmox/07-proxmox-resource-monitoring.png) | Resource Monitoring |
 
 ---
 
@@ -144,15 +247,26 @@ An equivalent Ubuntu virtual machine is created using the same intended CPU, mem
 | Disk | 20 GB |
 | Network | NAT |
 
+### VMware Execution
+
+1. Create the Ubuntu VM in VMware Workstation.
+2. Configure `2 vCPU`, `2 GB RAM`, and `20 GB Disk`.
+3. Configure the network as NAT.
+4. Start the virtual machine.
+5. Open the Ubuntu terminal.
+6. Verify the CPU and memory configuration.
+7. Run the same Sysbench CPU benchmark.
+8. Monitor resource utilization.
+9. Record the final benchmark result.
+
 ### VMware Evidence
 
-![VMware VM Configuration](screenshots/type2-vmware/01-vmware-vm-configuration.png)
-
-![VMware VM Running](screenshots/type2-vmware/02-vmware-vm-running.png)
-
-![VMware System Configuration](screenshots/type2-vmware/03-vmware-system-configuration.png)
-
-![VMware Sysbench Result](screenshots/type2-vmware/04-vmware-sysbench-result.png)
+| Screenshot | Evidence |
+|---|---|
+| ![VMware VM Configuration](screenshots/type2-vmware/01-vmware-vm-configuration.png) | VM Configuration |
+| ![VMware VM Running](screenshots/type2-vmware/02-vmware-vm-running.png) | Running VM |
+| ![VMware System Configuration](screenshots/type2-vmware/03-vmware-system-configuration.png) | System Configuration |
+| ![VMware Sysbench Result](screenshots/type2-vmware/04-vmware-sysbench-result.png) | Sysbench Benchmark Result |
 
 ---
 
@@ -196,7 +310,7 @@ The measured latency values were:
 - 95th percentile: **0.62 ms**
 - Latency Sum: **9997.48 ms**
 
-![Proxmox Sysbench Result](screenshots/type1-proxmox/06-proxmox-sys-configuration(2).png)
+![Proxmox Sysbench Result](screenshots/type1-proxmox/06-proxmox-sys-configuration%282%29.png)
 
 ### VMware Benchmark Observation
 
@@ -230,7 +344,13 @@ The measured latency values were:
      Ubuntu VM           Ubuntu VM
         |                   |
         v                   v
+   Verify System       Verify System
+        |                   |
+        v                   v
      Sysbench            Sysbench
+        |                   |
+        v                   v
+   Monitor Resources  Monitor Resources
         |                   |
         +--------+----------+
                  |
