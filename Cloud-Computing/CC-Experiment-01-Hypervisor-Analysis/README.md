@@ -6,62 +6,41 @@
 [![VMware Workstation](https://img.shields.io/badge/Type--2-VMware%20Workstation-blue)](https://www.vmware.com/products/desktop-hypervisor/workstation-pro.html)
 [![Ubuntu](https://img.shields.io/badge/Guest%20OS-Ubuntu-E95420)](https://ubuntu.com/)
 [![Sysbench](https://img.shields.io/badge/Benchmark-Sysbench-green)](https://github.com/akopytov/sysbench)
-[![Virtualization](https://img.shields.io/badge/Topic-Virtualization-purple)](#experiment-overview)
-[![VM Configuration](https://img.shields.io/badge/VM-2%20vCPU%20%7C%202GB%20RAM%20%7C%2020GB%20Disk-red)](#virtual-machine-configuration)
+[![Virtualization](https://img.shields.io/badge/Topic-Virtualization-purple)](#problem-statement)
+[![VM Configuration](https://img.shields.io/badge/VM-2%20vCPU%20%7C%202GB%20RAM%20%7C%2020GB%20Disk-red)](#configuration)
 
 ---
 
-##  Experiment Overview
+## Problem Statement
 
-This experiment studies the CPU performance of virtual machines running on two different hypervisor architectures:
+This experiment analyzes the CPU performance of virtual machines running on two different hypervisor architectures:
 
 - **Type-1 Hypervisor — Proxmox VE**
 - **Type-2 Hypervisor — VMware Workstation**
 
-Ubuntu is used as the guest operating system in both environments. Both virtual machines use an equivalent basic hardware configuration, and CPU performance is evaluated using the **Sysbench CPU benchmark**.
-
-The same benchmark workload is used in both environments to provide a consistent basis for performance analysis.
+Ubuntu is used as the guest operating system in both environments. Both virtual machines use an equivalent basic hardware configuration, and the same Sysbench CPU benchmark is used to provide a consistent basis for performance analysis.
 
 ---
 
-##  Objective
+## Objective
 
-The experiment aims to:
-
-- Understand the difference between Type-1 and Type-2 hypervisors.
-- Create and configure an Ubuntu VM using Proxmox VE.
-- Create and configure an Ubuntu VM using VMware Workstation.
-- Maintain an equivalent virtual hardware configuration.
-- Perform CPU benchmarking using Sysbench.
-- Record execution time, total events, events per second, and latency.
-- Compare the measured performance of both virtualization approaches.
-- Observe virtual machine resource utilization.
+1. Understand the difference between Type-1 and Type-2 hypervisors.
+2. Create and configure an Ubuntu virtual machine using Proxmox VE.
+3. Create and configure an Ubuntu virtual machine using VMware Workstation.
+4. Execute the same CPU benchmark in both environments and record the results.
+5. Compare the measured performance using execution time, throughput, and latency.
 
 ---
 
-##  Hypervisor Architectures
+# PART A — TYPE-1 HYPERVISOR: PROXMOX VE
 
-### Type-1 Hypervisor — Proxmox VE
+## Configuration
 
-Proxmox VE is used as the Type-1 hypervisor in this experiment.
-
-A Type-1 hypervisor operates directly on the physical infrastructure and provides virtual machines with virtualized hardware resources.
-
-### Type-2 Hypervisor — VMware Workstation
-
-VMware Workstation is used as the Type-2 hypervisor.
-
-A Type-2 hypervisor operates on top of a host operating system and provides virtualization services to guest virtual machines.
-
----
-
-##  Virtual Machine Configuration
-
-To make the comparison consistent, both virtual machines use the same intended basic configuration.
-
-| Resource | Configuration |
+| Parameter | Value |
 |---|---|
-| Guest Operating System | Ubuntu |
+| Hypervisor | Proxmox VE |
+| Hypervisor Type | Type-1 |
+| Guest OS | Ubuntu |
 | CPU | `2 vCPU` |
 | Memory | `2 GB RAM` |
 | Disk | `20 GB` |
@@ -69,90 +48,82 @@ To make the comparison consistent, both virtual machines use the same intended b
 
 ---
 
-#  EXECUTION STEPS
+## Architecture
 
-##  Step 1 — Create the Virtual Machines
+Proxmox VE is used as the **Type-1 hypervisor**.
 
-Create an Ubuntu virtual machine separately in:
+A Type-1 hypervisor operates directly on the physical infrastructure and provides virtualized hardware resources to the guest virtual machine.
 
-- **Proxmox VE** for the Type-1 experiment
-- **VMware Workstation** for the Type-2 experiment
-
----
-
-##  Step 2 — Configure the Virtual Machines
-
-Configure both VMs with the same intended resources:
-
-| Parameter | Configuration |
-|---|---|
-| Guest OS | Ubuntu |
-| CPU | `2 vCPU` |
-| Memory | `2 GB RAM` |
-| Disk | `20 GB` |
-
-For VMware Workstation, the network configuration used in the experiment is **NAT**.
+    Physical Hardware
+           |
+           v
+       Proxmox VE
+        Type-1
+           |
+           v
+       Ubuntu VM
+           |
+           v
+        Sysbench
+           |
+           v
+     Benchmark Results
 
 ---
 
-##  Step 3 — Start the Virtual Machines
+## Execution Steps
 
-Start each Ubuntu VM and open the guest operating system console.
+### Step 1 — Open Proxmox VE
 
-Verify that Ubuntu is running correctly before beginning the benchmark.
+Open the Proxmox VE interface and access the virtualization environment.
 
----
+### Step 2 — Create the Ubuntu Virtual Machine
 
-##  Step 4 — Verify System Configuration
+Create a new Ubuntu virtual machine in Proxmox VE.
 
-Inside the Ubuntu VM, check the processor configuration:
+### Step 3 — Configure the Virtual Machine
+
+Configure the VM with:
+
+- `2 vCPU`
+- `2 GB RAM`
+- `20 GB Disk`
+
+### Step 4 — Start the Virtual Machine
+
+Start the Ubuntu VM and open the guest operating system console.
+
+### Step 5 — Verify CPU Configuration
+
+Check the processor configuration:
 
     lscpu
+
+### Step 6 — Verify Memory Configuration
 
 Check the available memory:
 
     free -h
 
-Record the system configuration as part of the experimental evidence.
+### Step 7 — Run the Sysbench Benchmark
 
----
-
-##  Step 5 — Run the Sysbench Benchmark
-
-Execute the same CPU benchmark on both virtual machines:
+Execute the CPU benchmark:
 
     sysbench cpu --cpu-max-prime=20000 run
 
-The benchmark records:
+### Step 8 — Monitor Resource Utilization
 
-- Total execution time
-- Total number of events
-- Events per second
-- Minimum latency
-- Average latency
-- Maximum latency
-- 95th percentile latency
-- Latency sum
-
----
-
-##  Step 6 — Monitor Resource Usage
-
-During benchmark execution, monitor the virtual machine resource usage using:
+Monitor the virtual machine resources during execution:
 
     top
 
 Observe the CPU and memory utilization while the benchmark is running.
 
----
+### Step 9 — Record the Benchmark Output
 
-##  Step 7 — Record the Results
+Record the following values:
 
-Record the Sysbench output for each hypervisor.
-
-The following values are used for comparison:
-
-- Execution time
+- Total execution time
 - Total events
 - Events per second
 - Minimum latency
@@ -161,59 +132,55 @@ The following values are used for comparison:
 - 95th percentile latency
 - Latency sum
 
----
-
-##  Step 8 — Capture Experimental Evidence
+### Step 10 — Capture Experimental Evidence
 
 Capture screenshots showing:
 
-- Hypervisor environment
+- Proxmox dashboard
 - VM configuration
 - VM running state
 - Ubuntu console
 - System configuration
-- Sysbench benchmark output
+- Sysbench output
 - Resource monitoring
 
 ---
 
-##  Step 9 — Compare the Results
+## Results
 
-Compare the recorded results from **Proxmox VE** and **VMware Workstation** using the same benchmark workload and intended VM configuration.
+The recorded Proxmox VE Sysbench results are:
+
+| Metric | Proxmox VE |
+|---|---:|
+| Sysbench Version | `1.0.20` |
+| Number of Threads | `1` |
+| Prime Number Limit | `20,000` |
+| Total Execution Time | `10.0004 s` |
+| Total Events | `17,257` |
+| Events per Second | `1,725.49` |
+| Minimum Latency | `0.57 ms` |
+| Average Latency | `0.58 ms` |
+| Maximum Latency | `1.68 ms` |
+| 95th Percentile Latency | `0.62 ms` |
+| Latency Sum | `9997.48 ms` |
+
+### Proxmox Result Summary
+
+    Sysbench Version       : 1.0.20
+    Threads                : 1
+    Prime Number Limit     : 20000
+    Total Execution Time   : 10.0004 s
+    Total Events           : 17257
+    Events per Second      : 1725.49
+    Minimum Latency        : 0.57 ms
+    Average Latency        : 0.58 ms
+    Maximum Latency        : 1.68 ms
+    95th Percentile        : 0.62 ms
+    Latency Sum            : 9997.48 ms
 
 ---
 
-#  PART A — TYPE-1 HYPERVISOR: PROXMOX VE
-
-## Proxmox VE
-
-Proxmox VE is used as the Type-1 hypervisor.
-
-An Ubuntu virtual machine is created and configured using the standard experimental configuration.
-
-### Proxmox VM Configuration
-
-| Parameter | Value |
-|---|---|
-| Hypervisor | Proxmox VE |
-| Hypervisor Type | Type-1 |
-| Guest OS | Ubuntu |
-| CPU | 2 vCPU |
-| Memory | 2 GB RAM |
-| Disk | 20 GB |
-
-### Proxmox Execution
-
-1. Create the Ubuntu VM in Proxmox VE.
-2. Configure `2 vCPU`, `2 GB RAM`, and `20 GB Disk`.
-3. Start the virtual machine.
-4. Open the Ubuntu console.
-5. Verify the CPU and memory configuration.
-6. Run the Sysbench CPU benchmark.
-7. Monitor resource utilization.
-8. Record the final benchmark result.
-
-### Proxmox Evidence
+## Proxmox Evidence
 
 | Screenshot | Evidence |
 |---|---|
@@ -221,62 +188,180 @@ An Ubuntu virtual machine is created and configured using the standard experimen
 | ![Proxmox VM Configuration](screenshots/type1-proxmox/02-proxmox-vm-configuration.png) | VM Configuration |
 | ![Proxmox VM Running](screenshots/type1-proxmox/03-proxmox-vm-running.png) | Running VM |
 | ![Ubuntu Console](screenshots/type1-proxmox/04-proxmox-ubuntu-console.png) | Ubuntu Console |
-| ![System Configuration 1](screenshots/type1-proxmox/05-proxmox-sys-configuration%281%29.png) | System Configuration |
-| ![Sysbench Result](screenshots/type1-proxmox/06-proxmox-sys-configuration%282%29.png) | Sysbench Benchmark Result |
+| ![System Configuration](screenshots/type1-proxmox/05-proxmox-sys-configuration%281%29.png) | System Configuration |
+| ![Sysbench Result](screenshots/type1-proxmox/06-proxmox-sys-configuration%282%29.png) | Sysbench Result |
 | ![Resource Monitoring](screenshots/type1-proxmox/07-proxmox-resource-monitoring.png) | Resource Monitoring |
 
 ---
 
-#  PART B — TYPE-2 HYPERVISOR: VMWARE WORKSTATION
+# PART B — TYPE-2 HYPERVISOR: VMWARE WORKSTATION
 
-## VMware Workstation
-
-VMware Workstation is used as the Type-2 hypervisor.
-
-An equivalent Ubuntu virtual machine is created using the same intended CPU, memory, and disk configuration.
-
-### VMware VM Configuration
+## Configuration
 
 | Parameter | Value |
 |---|---|
 | Hypervisor | VMware Workstation |
 | Hypervisor Type | Type-2 |
 | Guest OS | Ubuntu |
-| CPU | 2 vCPU |
-| Memory | 2 GB RAM |
-| Disk | 20 GB |
+| CPU | `2 vCPU` |
+| Memory | `2 GB RAM` |
+| Disk | `20 GB` |
 | Network | NAT |
+| Benchmark | Sysbench CPU |
 
-### VMware Execution
+---
 
-1. Create the Ubuntu VM in VMware Workstation.
-2. Configure `2 vCPU`, `2 GB RAM`, and `20 GB Disk`.
-3. Configure the network as NAT.
-4. Start the virtual machine.
-5. Open the Ubuntu terminal.
-6. Verify the CPU and memory configuration.
-7. Run the same Sysbench CPU benchmark.
-8. Monitor resource utilization.
-9. Record the final benchmark result.
+## Architecture
 
-### VMware Evidence
+VMware Workstation is used as the **Type-2 hypervisor**.
+
+A Type-2 hypervisor operates on top of a host operating system and provides virtualization services to the guest virtual machine.
+
+    Physical Hardware
+           |
+           v
+    Host Operating System
+           |
+           v
+    VMware Workstation
+          Type-2
+           |
+           v
+       Ubuntu VM
+           |
+           v
+        Sysbench
+           |
+           v
+     Benchmark Results
+
+---
+
+## Execution Steps
+
+### Step 1 — Open VMware Workstation
+
+Open VMware Workstation on the host system.
+
+### Step 2 — Create the Ubuntu Virtual Machine
+
+Create a new Ubuntu virtual machine in VMware Workstation.
+
+### Step 3 — Configure the Virtual Machine
+
+Configure the VM with:
+
+- `2 vCPU`
+- `2 GB RAM`
+- `20 GB Disk`
+- `NAT` Network
+
+### Step 4 — Start the Virtual Machine
+
+Start the Ubuntu VM and open the guest operating system terminal.
+
+### Step 5 — Verify CPU Configuration
+
+Check the processor configuration:
+
+    lscpu
+
+### Step 6 — Verify Memory Configuration
+
+Check the available memory:
+
+    free -h
+
+### Step 7 — Run the Sysbench Benchmark
+
+Execute the same CPU benchmark:
+
+    sysbench cpu --cpu-max-prime=20000 run
+
+### Step 8 — Monitor Resource Utilization
+
+Monitor the virtual machine resources during execution:
+
+    top
+
+Observe the CPU and memory utilization while the benchmark is running.
+
+### Step 9 — Record the Benchmark Output
+
+Record the following values:
+
+- Total execution time
+- Total events
+- Events per second
+- Minimum latency
+- Average latency
+- Maximum latency
+- 95th percentile latency
+- Latency sum
+
+### Step 10 — Capture Experimental Evidence
+
+Capture screenshots showing:
+
+- VM configuration
+- VM running state
+- System configuration
+- Sysbench benchmark output
+
+---
+
+## Results
+
+The recorded VMware Workstation Sysbench results are:
+
+| Metric | VMware Workstation |
+|---|---:|
+| Sysbench Version | `1.0.20` |
+| Number of Threads | `1` |
+| Prime Number Limit | `20,000` |
+| Total Execution Time | `10.0006 s` |
+| Total Events | `24,366` |
+| Events per Second | `2,436.05` |
+| Minimum Latency | `0.40 ms` |
+| Average Latency | `0.41 ms` |
+| Maximum Latency | `4.39 ms` |
+| 95th Percentile Latency | `0.42 ms` |
+| Latency Sum | `9992.75 ms` |
+
+### VMware Result Summary
+
+    Sysbench Version       : 1.0.20
+    Threads                : 1
+    Prime Number Limit     : 20000
+    Total Execution Time   : 10.0006 s
+    Total Events           : 24366
+    Events per Second      : 2436.05
+    Minimum Latency        : 0.40 ms
+    Average Latency        : 0.41 ms
+    Maximum Latency        : 4.39 ms
+    95th Percentile        : 0.42 ms
+    Latency Sum            : 9992.75 ms
+
+---
+
+## VMware Evidence
 
 | Screenshot | Evidence |
 |---|---|
 | ![VMware VM Configuration](screenshots/type2-vmware/01-vmware-vm-configuration.png) | VM Configuration |
 | ![VMware VM Running](screenshots/type2-vmware/02-vmware-vm-running.png) | Running VM |
 | ![VMware System Configuration](screenshots/type2-vmware/03-vmware-system-configuration.png) | System Configuration |
-| ![VMware Sysbench Result](screenshots/type2-vmware/04-vmware-sysbench-result.png) | Sysbench Benchmark Result |
+| ![VMware Sysbench Result](screenshots/type2-vmware/04-vmware-sysbench-result.png) | Sysbench Result |
 
 ---
 
-#  PERFORMANCE ANALYSIS
+# PERFORMANCE COMPARISON
 
-The same Sysbench CPU benchmark is used on both hypervisors:
+The same benchmark workload is executed in both environments:
 
     sysbench cpu --cpu-max-prime=20000 run
 
-## Performance Comparison
+## Performance Comparison Table
 
 | Performance Metric | Proxmox VE — Type-1 | VMware Workstation — Type-2 |
 |---|---:|---:|
@@ -296,41 +381,46 @@ The same Sysbench CPU benchmark is used on both hypervisors:
 | 95th Percentile Latency | `0.62 ms` | `0.42 ms` |
 | Latency Sum | `9997.48 ms` | `9992.75 ms` |
 
-### Proxmox Benchmark Observation
+---
 
-The Proxmox VE benchmark completed in **10.0004 seconds**.
+## Performance Observation
 
-The VM processed **17,257 total events** with a throughput of **1,725.49 events per second**.
+### Throughput
 
-The measured latency values were:
+| Hypervisor | Events per Second |
+|---|---:|
+| Proxmox VE — Type-1 | `1,725.49` |
+| VMware Workstation — Type-2 | `2,436.05` |
 
-- Minimum: **0.57 ms**
-- Average: **0.58 ms**
-- Maximum: **1.68 ms**
-- 95th percentile: **0.62 ms**
-- Latency Sum: **9997.48 ms**
+### Average Latency
 
-![Proxmox Sysbench Result](screenshots/type1-proxmox/06-proxmox-sys-configuration%282%29.png)
+| Hypervisor | Average Latency |
+|---|---:|
+| Proxmox VE — Type-1 | `0.58 ms` |
+| VMware Workstation — Type-2 | `0.41 ms` |
 
-### VMware Benchmark Observation
+### Execution Time
 
-The VMware Workstation benchmark completed in **10.0006 seconds**.
+| Hypervisor | Execution Time |
+|---|---:|
+| Proxmox VE — Type-1 | `10.0004 s` |
+| VMware Workstation — Type-2 | `10.0006 s` |
 
-The VM processed **24,366 total events** with a throughput of **2,436.05 events per second**.
-
-The measured latency values were:
-
-- Minimum: **0.40 ms**
-- Average: **0.41 ms**
-- Maximum: **4.39 ms**
-- 95th percentile: **0.42 ms**
-- Latency Sum: **9992.75 ms**
-
-![VMware Sysbench Result](screenshots/type2-vmware/04-vmware-sysbench-result.png)
+The measured execution times are very close in this benchmark run. The recorded throughput and latency values are used as the measured basis for the performance comparison.
 
 ---
 
-#  EXPERIMENT WORKFLOW
+# PERFORMANCE GRAPH
+
+## Sysbench CPU Throughput Comparison
+
+![Sysbench CPU Throughput Comparison](performance-analysis-throughput.png)
+
+The graph represents the recorded **events per second** from the Sysbench CPU benchmark.
+
+---
+
+# EXPERIMENT WORKFLOW
 
     Hypervisor Performance Analysis
                  |
@@ -344,13 +434,16 @@ The measured latency values were:
      Ubuntu VM           Ubuntu VM
         |                   |
         v                   v
-   Verify System       Verify System
+  Configure VM        Configure VM
+        |                   |
+        v                   v
+  Verify System       Verify System
         |                   |
         v                   v
      Sysbench            Sysbench
         |                   |
         v                   v
-   Monitor Resources  Monitor Resources
+ Monitor Resources   Monitor Resources
         |                   |
         +--------+----------+
                  |
@@ -365,14 +458,21 @@ The measured latency values were:
 
 ---
 
-#  PERFORMANCE OBSERVATION
+# CONCLUSION
 
-The experiment keeps the guest operating system, intended virtual CPU allocation, memory allocation, disk allocation, and Sysbench workload equivalent across both environments.
+This experiment demonstrates the practical performance analysis of virtual machines running on **Proxmox VE (Type-1)** and **VMware Workstation (Type-2)**.
 
-The measured results are:
+Equivalent Ubuntu virtual machines were configured with the intended same CPU, memory, and disk resources. The same Sysbench CPU workload was executed in both environments, and the resulting execution time, throughput, and latency values were recorded.
 
-| Metric | Proxmox VE | VMware Workstation |
+## Conclusion Table
+
+| Metric | Proxmox VE — Type-1 | VMware Workstation — Type-2 |
 |---|---:|---:|
+| Hypervisor Type | Type-1 | Type-2 |
+| Guest OS | Ubuntu | Ubuntu |
+| CPU | 2 vCPU | 2 vCPU |
+| Memory | 2 GB | 2 GB |
+| Disk | 20 GB | 20 GB |
 | Execution Time | `10.0004 s` | `10.0006 s` |
 | Total Events | `17,257` | `24,366` |
 | Events per Second | `1,725.49` | `2,436.05` |
@@ -380,11 +480,11 @@ The measured results are:
 | Maximum Latency | `1.68 ms` | `4.39 ms` |
 | 95th Percentile Latency | `0.62 ms` | `0.42 ms` |
 
-These values provide the measured basis for comparing CPU performance between the two virtualization environments.
+The recorded benchmark values provide the practical basis for comparing CPU performance across the two virtualization environments.
 
 ---
 
-#  TOOLS & TECHNOLOGIES
+# TOOLS & TECHNOLOGIES
 
 | Category | Technology |
 |---|---|
@@ -400,14 +500,15 @@ These values provide the measured basis for comparing CPU performance between th
 
 ---
 
-#  REPOSITORY STRUCTURE
+# REPOSITORY STRUCTURE
 
     CC-Experiment-01-Hypervisor-Analysis/
     │
     ├── README.md
     │
     ├── results/
-    │   └── performance-analysis.md
+    │   ├── performance-analysis.md
+    │   └── performance-analysis-throughput.png
     │
     └── screenshots/
         │
@@ -428,34 +529,6 @@ These values provide the measured basis for comparing CPU performance between th
 
 ---
 
-#  KEY OBSERVATIONS
+**AUTHOR**
 
-- Proxmox VE represents a **Type-1 hypervisor**.
-- VMware Workstation represents a **Type-2 hypervisor**.
-- Ubuntu is used as the guest operating system in both environments.
-- Both virtual machines use equivalent intended hardware resources.
-- The same Sysbench CPU benchmark is used for both environments.
-- Proxmox VE recorded **1,725.49 events/second**.
-- VMware Workstation recorded **2,436.05 events/second**.
-- Proxmox VE average latency was **0.58 ms**.
-- VMware Workstation average latency was **0.41 ms**.
-- The measured values are taken from the recorded benchmark outputs.
-
----
-
-#  CONCLUSION
-
-This experiment demonstrates the practical performance analysis of virtual machines running on **Proxmox VE (Type-1)** and **VMware Workstation (Type-2)**.
-
-Equivalent Ubuntu virtual machines are created and tested using the same Sysbench CPU workload.
-
-The final benchmark results are:
-
-| Metric | Proxmox VE | VMware Workstation |
-|---|---:|---:|
-| Execution Time | `10.0004 s` | `10.0006 s` |
-| Total Events | `17,257` | `24,366` |
-| Events per Second | `1,725.49` | `2,436.05` |
-| Average Latency | `0.58 ms` | `0.41 ms` |
-
-The experiment provides a practical basis for analyzing CPU performance under the two different hypervisor architectures.
+# Srujana Patil
