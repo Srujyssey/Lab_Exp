@@ -414,7 +414,8 @@ The measured execution times are very close in this benchmark run. The recorded 
 
 ## Sysbench CPU Throughput Comparison
 
-![Sysbench CPU Throughput Comparison](performance-analysis-throughput.png)
+
+![Sysbench CPU Throughput Comparison](https://raw.githubusercontent.com/Srujyssey/Lab_Exp/main/Cloud-Computing/CC-Experiment-01-Hypervisor-Analysis/results/performance-analysis-throughput.png)
 
 The graph represents the recorded **events per second** from the Sysbench CPU benchmark.
 
