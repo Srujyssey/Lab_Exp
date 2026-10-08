@@ -1,0 +1,57 @@
+Parallel Maximum/Minimum Search - OpenMP Results
+
+Performance Analysis
+
+Test 1
+Dataset Size: 100000
+Threads: 6
+CPU Processors: 12
+Sequential Time: 0.000243 seconds
+Parallel Time: 0.001176 seconds
+Speedup: 0.2066x
+Efficiency: 3.44%
+
+Test 2
+Dataset Size: 100000
+Threads: 8
+CPU Processors: 12
+Sequential Time: 0.000243 seconds
+Parallel Time: 0.004268 seconds
+Speedup: 0.0569x
+Efficiency: 0.71%
+
+Test 3
+Dataset Size: 200000
+Threads: 10
+CPU Processors: 12
+Sequential Time: 0.000411 seconds
+Parallel Time: 0.007784 seconds
+Speedup: 0.0528x
+Efficiency: 0.53%
+
+Test 4
+Dataset Size: 200000
+Threads: 12
+CPU Processors: 12
+Sequential Time: 0.000411 seconds
+Parallel Time: 0.014891 seconds
+Speedup: 0.0276x
+Efficiency: 0.23%
+
+Test 5
+Dataset Size: 300000
+Threads: 14
+CPU Processors: 12
+Sequential Time: 0.000804 seconds
+Parallel Time: 0.012609 seconds
+Speedup: 0.0638x
+Efficiency: 0.46%
+
+Test 6
+Dataset Size: 400000
+Threads: 16
+CPU Processors: 12
+Sequential Time: 0.000846 seconds
+Parallel Time: 0.006312 seconds
+Speedup: 0.1340x
+Efficiency: 0.84%
