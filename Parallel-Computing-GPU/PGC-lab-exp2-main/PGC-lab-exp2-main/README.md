@@ -1193,15 +1193,10 @@ The experiment therefore provides practical understanding of **thread creation, 
 
 ## Author
 
-**Zakiya Tahasildar**
+**Srujana Patil**
 
-KLE Technological University  
-B.Tech — Computer Science and Artificial Intelligence
+
 
 ---
 
-## Related Repository
 
-PGC Lab Repository:
-
-`https://github.com/Zakiya-t/PGC-Lab`
